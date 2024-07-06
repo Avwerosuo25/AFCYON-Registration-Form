@@ -1,2 +1,4 @@
 Name: Susanna Saduwa, Age: 27, Gender: female, Health Issues: None, Chaplaincy: St. Bernard Abak, Code: SBAH46F
 Name: Kelvin Saduwa, Age: 20, Gender: male, Health Issues: None, Chaplaincy: St John Paul Effurun, Code: SJPBR2Z
+Name: George Godstime, Age: 25, Gender: male, Health Issues: None, Chaplaincy: Stella Maris Pathfinder, Code: SMP0Uas
+Name: George Godstime, Age: 25, Gender: male, Health Issues: None, Chaplaincy: St. Bernard Abak, Code: SBAiHrN
