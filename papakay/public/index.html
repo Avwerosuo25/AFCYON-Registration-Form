@@ -5,15 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        input {width: 95%; padding: 10px; margin: 10px 0;}
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        select, button { width: 100%; padding: 10px; margin: 10px 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .code-text { font-size: large; font-weight: bold; }
-        .code { color: green; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f7f7f7; 
+            margin: 0; 
+            padding: 0;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 20px; 
+            background-color: #fff; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px; 
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        h1, h2 {
+            text-align: center; 
+            color: #333;
+        }
+        input, select, button { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            transition: border-color 0.3s;
+        }
+        input{
+            width: 95%;
+        }
+        select{
+            background-color: whitesmoke; 
+        }
+        input:focus, select:focus, button:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button { 
+        background-color: #000; 
+        color: #fff; 
+        cursor: pointer; 
+        font-size: 16px; 
+        font-weight: bold; 
+        transition: background-color 0.3s;
+        }
+        button:hover {
+        background-color: #333;
+        }
+
+        .code-text { 
+            font-size: large; 
+            font-weight: bold; 
+            text-align: center; 
+            margin-top: 20px; 
+            padding: 10px; 
+            border: 1px dashed #28a745; 
+            border-radius: 4px; 
+            background-color: #e9ffe6; 
+            color: #28a745; 
+            cursor: pointer; 
+            transition: background-color 0.3s;
+        }
+        .code-text:hover {
+            background-color: #c3f9c4;
+        }
+        .hidden { display: none; }
+        .copied { 
+            display: none; 
+            text-align: center; 
+            margin-top: 10px; 
+            color: #28a745; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            background-color: #fff; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: whitesmoke;         }
     </style>
 </head>
 <body>
@@ -32,7 +113,7 @@
                 <option value="none">No</option>
                 <option value="yes">Yes</option>
             </select>
-            <div id="healthIssuesDetails" style="display:none;">
+            <div id="healthIssuesDetails" class="hidden">
                 <input type="text" id="healthDetails" placeholder="Please state the underlying health issues">
             </div>
             <select id="chaplaincy" required>
@@ -47,7 +128,8 @@
             </select>
             <button type="submit">Submit</button>
         </form>
-        <div id="result" class="code-text"></div>
+        <div id="result" class="code-text hidden"></div>
+        <div id="copiedMessage" class="copied">Code copied to clipboard!</div>
         <hr>
         <h2>Search User Information</h2>
         <form id="searchForm">
@@ -60,9 +142,9 @@
         document.getElementById('healthIssues').addEventListener('change', function() {
             const healthIssuesDetails = document.getElementById('healthIssuesDetails');
             if (this.value === 'yes') {
-                healthIssuesDetails.style.display = 'block';
+                healthIssuesDetails.classList.remove('hidden');
             } else {
-                healthIssuesDetails.style.display = 'none';
+                healthIssuesDetails.classList.add('hidden');
             }
         });
 
@@ -93,11 +175,19 @@
             });
 
             const result = await response.json();
-            if (result.status === 'existing') {
-                document.getElementById('result').innerHTML = `Participation ID already generated for this user: <span class="code">${result.code}</span>`;
-            } else {
-                document.getElementById('result').innerHTML = `Get Participation ID: <span class="code">${result.code}</span>`;
-            }
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = result.status === 'existing' ? 
+                `Participation ID already generated for this user: <span class="code">${result.code}</span>` : 
+                `Get Participation ID: <span class="code">${result.code}</span>`;
+
+            resultDiv.onclick = function() {
+                navigator.clipboard.writeText(result.code).then(function() {
+                    const copiedMessage = document.getElementById('copiedMessage');
+                    copiedMessage.style.display = 'block';
+                    setTimeout(() => copiedMessage.style.display = 'none', 2000);
+                });
+            };
         });
 
         document.getElementById('searchForm').addEventListener('submit', async function(e) {

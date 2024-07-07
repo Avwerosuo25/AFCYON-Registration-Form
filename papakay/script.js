@@ -39,13 +39,22 @@ async function connectToMongoDB() {
 
 connectToMongoDB().catch(console.error);
 
-function generateUniqueCode(chaplaincyAbbr, codeLength = 7) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let code = chaplaincyAbbr;
-    for (let i = chaplaincyAbbr.length; i < codeLength; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length));
+async function generateSerialCode(chaplaincyAbbr) {
+    const lastUser = await db.collection('users')
+        .find({ code: { $regex: `^${chaplaincyAbbr}` } })
+        .sort({ code: -1 })
+        .limit(1)
+        .toArray();
+
+    if (lastUser.length === 0) {
+        return `${chaplaincyAbbr}001`;
     }
-    return code;
+
+    const lastCode = lastUser[0].code;
+    const lastNumber = parseInt(lastCode.slice(chaplaincyAbbr.length), 10);
+    const newNumber = lastNumber + 1;
+
+    return `${chaplaincyAbbr}${newNumber.toString().padStart(3, '0')}`;
 }
 
 app.post('/generate-code', async (req, res) => {
@@ -54,17 +63,15 @@ app.post('/generate-code', async (req, res) => {
     const chaplaincyName = chaplaincies[userInfo.chaplaincy][0];
 
     try {
-        // Check if the user already exists based on name and chaplaincy
         const existingUser = await db.collection('users').findOne({ 
             name: userInfo.name, 
             chaplaincy: chaplaincyName 
         });
 
         if (existingUser) {
-            // If user exists
             res.send({ code: existingUser.code, status: 'existing' });
         } else {
-            const code = generateUniqueCode(chaplaincyAbbr);
+            const code = await generateSerialCode(chaplaincyAbbr);
             const data = {
                 code,
                 name: userInfo.name,
