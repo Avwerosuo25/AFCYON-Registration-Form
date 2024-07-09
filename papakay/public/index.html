@@ -98,7 +98,16 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="accessCodeContainer">
+        <h1>Enter Access Code</h1>
+        <form id="accessCodeForm">
+            <input type="text" id="accessCode" placeholder="Access Code" required>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="accessCodeError" class="hidden">Invalid access code</div>
+    </div>
+
+    <div class="container hidden" id="registrationContainer">
         <h1>Registration Form</h1>
         <form id="userForm">
             <input type="text" id="name" placeholder="Full Name" required>
@@ -133,12 +142,29 @@
         <hr>
         <h2>Search User Information</h2>
         <form id="searchForm">
-            <input type="text" id="searchCode" placeholder="Enter Code" required>
+            <input type="text" id="searchCode" placeholder="Enter Participation ID" required>
             <button type="submit">Search</button>
         </form>
         <div id="searchResult"></div>
     </div>
+
     <script>
+        document.getElementById('accessCodeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const accessCode = document.getElementById('accessCode').value;
+
+            const response = await fetch(`/verify-access-code?code=${accessCode}`);
+            const result = await response.json();
+
+            if (result.valid) {
+                document.getElementById('accessCodeContainer').classList.add('hidden');
+                document.getElementById('registrationContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('accessCodeError').classList.remove('hidden');
+            }
+        });
+
         document.getElementById('healthIssues').addEventListener('change', function() {
             const healthIssuesDetails = document.getElementById('healthIssuesDetails');
             if (this.value === 'yes') {
@@ -206,11 +232,10 @@
                         <tr><th>Gender</th><td>${userInfo.gender}</td></tr>
                         <tr><th>Health Issues</th><td>${userInfo.healthIssues}</td></tr>
                         <tr><th>Chaplaincy</th><td>${userInfo.chaplaincy}</td></tr>
-                        <tr><th>Code</th><td>${userInfo.code}</td></tr>
-                    </table>
-                `;
+                        <tr><th>Participation ID</th><td>${userInfo.code}</td></tr>
+                    </table>`;
             } else {
-                document.getElementById('searchResult').innerHTML = 'User not found';
+                document.getElementById('searchResult').textContent = 'User not found';
             }
         });
     </script>

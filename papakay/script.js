@@ -57,6 +57,23 @@ async function generateSerialCode(chaplaincyAbbr) {
     return `${chaplaincyAbbr}${newNumber.toString().padStart(3, '0')}`;
 }
 
+app.get('/verify-access-code', async (req, res) => {
+    const accessCode = req.query.code;
+
+    try {
+        const result = await db.collection('accessCodes').findOne({ code: accessCode });
+
+        if (result) {
+            res.send({ valid: true });
+        } else {
+            res.send({ valid: false });
+        }
+    } catch (error) {
+        console.error('Error querying MongoDB:', error);
+        res.status(500).send({ error: 'Database error' });
+    }
+});
+
 app.post('/generate-code', async (req, res) => {
     const userInfo = req.body;
     const chaplaincyAbbr = chaplaincies[userInfo.chaplaincy][1];
