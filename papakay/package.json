@@ -4,7 +4,7 @@
   "main": "script.js",
   "scripts": {
     "start": "node script.js",
-    "build": "echo 'No build step required'"
+    "build": "echo No build step required"
   },
   "keywords": [],
   "author": "",
