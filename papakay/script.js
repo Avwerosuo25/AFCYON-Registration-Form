@@ -124,6 +124,17 @@ app.get('/search', async (req, res) => {
     }
 });
 
+app.get('/all-users', async (req, res) => {
+    try {
+        const users = await db.collection('users').find({}).toArray();
+        res.send(users);
+    } catch (error) {
+        console.error('Error querying MongoDB:', error);
+        res.status(500).send({ error: 'Database error' });
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
 });

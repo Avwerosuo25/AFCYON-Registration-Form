@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database View</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background-color: #f7f7f7; 
+            margin: 0; 
+            padding: 0;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px; 
+            background-color: #fff; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px; 
+            transition: transform 0.3s;
+        }
+        h1 { 
+            text-align: center; 
+            color: #333;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            background-color: #fff; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: whitesmoke; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Database View</h1>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>Participation ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Health Issues</th>
+                    <th>Chaplaincy</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchUsers() {
+            const response = await fetch('/all-users');
+            const users = await response.json();
+            const tableBody = document.querySelector('#usersTable tbody');
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.code}</td>
+                    <td>${user.name}</td>
+                    <td>${user.age}</td>
+                    <td>${user.gender}</td>
+                    <td>${user.healthIssues}</td>
+                    <td>${user.chaplaincy}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        fetchUsers();
+    </script>
+</body>
+</html>
