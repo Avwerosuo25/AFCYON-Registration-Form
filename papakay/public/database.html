@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Database View</title>
     <style>
-body { 
+        body { 
             font-family: Arial, sans-serif; 
             background-color: #f7f7f7; 
             margin: 0; 
             padding: 0;
         }
         .container { 
-            max-width: 800px; 
+            max-width: 1000px; 
             margin: 50px auto; 
             padding: 20px; 
             background-color: #fff; 
@@ -35,8 +35,7 @@ body {
         th, td { 
             border: 2px solid #444; 
             padding: 10px; 
-            text-align: left;
-            white-space: nowrap; 
+            text-align: left; 
         }
         th { 
             background-color: #f2f2f2; 
@@ -44,6 +43,42 @@ body {
         }
         tr:nth-child(even) { 
             background-color: #f9f9f9; 
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr { 
+                display: block; 
+            }
+            thead tr { 
+                display: none; 
+            }
+            tr { 
+                margin-bottom: 15px; 
+                border: 2px solid #444;
+                background-color: #fff;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+            }
+            td { 
+                border: none; 
+                position: relative; 
+                padding-left: 50%; 
+                text-align: left; 
+                border-bottom: 2px solid #ddd;
+            }
+            td:last-child { 
+                border-bottom: none; 
+            }
+            td::before { 
+                content: attr(data-label); 
+                position: absolute; 
+                left: 10px; 
+                width: calc(50% - 20px); 
+                padding-right: 10px; 
+                font-weight: bold; 
+                white-space: nowrap;
+            }
         }
     </style>
 </head>
@@ -76,12 +111,12 @@ body {
             users.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${user.code}</td>
-                    <td>${user.name}</td>
-                    <td>${user.age}</td>
-                    <td>${user.gender}</td>
-                    <td>${user.healthIssues}</td>
-                    <td>${user.chaplaincy}</td>
+                    <td data-label="Participation ID">${user.code}</td>
+                    <td data-label="Name">${user.name}</td>
+                    <td data-label="Age">${user.age}</td>
+                    <td data-label="Gender">${user.gender}</td>
+                    <td data-label="Health Issues">${user.healthIssues}</td>
+                    <td data-label="Chaplaincy">${user.chaplaincy}</td>
                 `;
                 tableBody.appendChild(row);
             });
