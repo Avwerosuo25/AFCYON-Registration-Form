@@ -88,6 +88,7 @@
         <table id="usersTable">
             <thead>
                 <tr>
+                    <th>Serial No.</th>
                     <th>Participation ID</th>
                     <th>Name</th>
                     <th>Age</th>
@@ -108,9 +109,10 @@
             const users = await response.json();
             const tableBody = document.querySelector('#usersTable tbody');
             
-            users.forEach(user => {
+            users.forEach((user, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                    <td data-label="Serial No.">${index + 1}</td>
                     <td data-label="Participation ID">${user.code}</td>
                     <td data-label="Name">${user.name}</td>
                     <td data-label="Age">${user.age}</td>
